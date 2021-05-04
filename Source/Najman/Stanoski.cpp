@@ -27,62 +27,62 @@ void AStanoski::BeginPlay()
 {
     Super::BeginPlay();
 
-    APawn* p = UGameplayStatics::GetPlayerPawn(this, 0);
+    APawn* PlayerPtr = UGameplayStatics::GetPlayerPawn(this, 0);
 
-    if (p)
+    if (PlayerPtr)
     {
-        marcinPlayer = Cast<ANajmanPlayer, APawn>(p);
+        MarcinPlayer = Cast<ANajmanPlayer, APawn>(PlayerPtr);
     }
 
-    UGameplayStatics::GetAllActorsOfClass(this, AStanoskiBaseSpawnPoint::StaticClass(), spawnPoints);
+    UGameplayStatics::GetAllActorsOfClass(this, AStanoskiBaseSpawnPoint::StaticClass(), SpawnPoints);
 
-    currentSpawnPointId = 0;
+    CurrentSpawnPointId = 0;
 
-    currentSpawnPoint = nullptr;
+    CurrentSpawnPoint = nullptr;
 
-    setupSayHelloTriggerTimer();
+    SetupSayHelloTriggerTimer();
 }
 
 // Called every frame
 void AStanoski::Tick(float DeltaTime)
 {
-    static int cnt = 0;
+    static int Cnt = 0;
 
     Super::Tick(DeltaTime);
 
-    if (marcinPlayer)
+    if (MarcinPlayer)
     {
-        FVector objToPlayerVect = marcinPlayer->GetActorLocation() - GetActorLocation();
-        objToPlayerVect.Z = 0.0;
-        objToPlayerVect.Normalize();
+        FVector ObjToPlayerVect = MarcinPlayer->GetActorLocation() - GetActorLocation();
+        ObjToPlayerVect.Z = 0.0;
+        ObjToPlayerVect.Normalize();
 
-        FVector forwardVect = GetActorForwardVector();
-        forwardVect.Z = 0.0;
+        FVector ForwardVect = GetActorForwardVector();
+        ForwardVect.Z = 0.0;
 
-        float angle = FGenericPlatformMath::Acos(FVector::DotProduct(forwardVect, objToPlayerVect));
+        float Angle = FGenericPlatformMath::Acos(FVector::DotProduct(ForwardVect, ObjToPlayerVect));
 
-        if (angle > 0.2)
+        if (Angle > 0.2)
         {
             AddActorLocalRotation(FRotator(0.0, 2.0, 0.0));
         }
 
-        if (marcinPlayer->isPunching && marcinPlayer->GetDistanceTo(this) < 100.0 && !isHit)
+        if (MarcinPlayer->IsPunching && MarcinPlayer->GetDistanceTo(this) < 100.0 && !IsHit)
         {
-            isHit = true;
-            GetWorldTimerManager().SetTimer(handle, 
+            IsHit = true;
+            GetWorldTimerManager().SetTimer(TimerHandle, 
                 [=]() {
-                    isHit = false; 
-                    teleport();
+                    IsHit = false; 
+                    Teleport();
                 },
                 0.5, false);
-            if (cnt % 30 == 0)
+            if (Cnt % 30 == 0)
             {
                 UE_LOG(LogTemp, Log, TEXT("Hit!!!"));
             }
         }
     }
   
-    cnt++;
+    Cnt++;
 }
 
 // Called to bind functionality to input
@@ -92,47 +92,47 @@ void AStanoski::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AStanoski::teleport()
+void AStanoski::Teleport()
 {
-    if (spawnPoints.Num() < 1)
+    if (SpawnPoints.Num() < 1)
     {
         UE_LOG(LogTemp, Error, TEXT("No spawn points!"));
         return;
     }
 
-    if (currentSpawnPointId >= spawnPoints.Num() - 1)
+    if (CurrentSpawnPointId >= SpawnPoints.Num() - 1)
     {
-        currentSpawnPointId = -1;
+        CurrentSpawnPointId = -1;
     }
 
-    for (auto& spawnPoint : spawnPoints)
+    for (auto& spawnPoint : SpawnPoints)
     {
-        AStanoskiBaseSpawnPoint* stanoskiSpawnPoint;
-        stanoskiSpawnPoint = Cast<AStanoskiBaseSpawnPoint, AActor>(spawnPoint);
+        AStanoskiBaseSpawnPoint* StanoskiSpawnPoint;
+        StanoskiSpawnPoint = Cast<AStanoskiBaseSpawnPoint, AActor>(spawnPoint);
         if (spawnPoint)
         {
-            if ((stanoskiSpawnPoint->id) == (currentSpawnPointId + 1))
+            if ((StanoskiSpawnPoint->Id) == (CurrentSpawnPointId + 1))
             {
-                this->SetActorLocation(stanoskiSpawnPoint->GetActorLocation());
-                currentSpawnPointId += 1;
+                this->SetActorLocation(StanoskiSpawnPoint->GetActorLocation());
+                CurrentSpawnPointId += 1;
                 return;
             }
         }
     }
 }
 
-void AStanoski::sayHello()
+void AStanoski::SayHello()
 {
-    if (!isSayingHello)
+    if (!IsSayingHello)
     {
-        isSayingHello = true;
+        IsSayingHello = true;
         UE_LOG(LogTemp, Error, TEXT("Say-hello triggered!"));
 
-        GetWorldTimerManager().ClearTimer(sayHelloTimerHandle);
+        GetWorldTimerManager().ClearTimer(SayHelloTimerHandle);
 
         GetWorldTimerManager().SetTimer(
-            sayHelloTimerHandle,
-            [=]() { isSayingHello = false; },
+            SayHelloTimerHandle,
+            [=]() { IsSayingHello = false; },
             1.5,
             false,
             0.5
@@ -140,12 +140,12 @@ void AStanoski::sayHello()
     }
 }
 
-void AStanoski::setupSayHelloTriggerTimer()
+void AStanoski::SetupSayHelloTriggerTimer()
 {
     GetWorldTimerManager().SetTimer(
-        sayHelloTriggerTimerHandle,
+        SayHelloTriggerTimerHandle,
         this,
-        &AStanoski::sayHello,
+        &AStanoski::SayHello,
         7.0,
         true,
         1.0

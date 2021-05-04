@@ -33,14 +33,14 @@ void ANajmanPlayer::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    static int cnt = 0;
+    static int Cnt = 0;
 
-    if (cnt % 20 == 0)
+    if (Cnt % 20 == 0)
     {
-        UE_LOG(LogTemp, Log, TEXT("Is punching: %d"), (int)isPunching);
+        UE_LOG(LogTemp, Log, TEXT("Is punching: %d"), (int)IsPunching);
     }
 
-    cnt++;
+    Cnt++;
 }
 
 // Called to bind functionality to input
@@ -48,19 +48,19 @@ void ANajmanPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    PlayerInputComponent->BindAction("Punch", IE_Pressed, this, &ANajmanPlayer::punch);
+    PlayerInputComponent->BindAction("Punch", IE_Pressed, this, &ANajmanPlayer::Punch);
 }
 
-void ANajmanPlayer::punch()
+void ANajmanPlayer::Punch()
 {
-    if (!isPunching)
+    if (!IsPunching)
     {
-        GetWorldTimerManager().ClearTimer(punchTimer);
+        GetWorldTimerManager().ClearTimer(PunchTimer);
 
-        isPunching = true;
+        IsPunching = true;
         GetWorldTimerManager().SetTimer(
-            punchTimer,
-            [=]() { isPunching = false; },
+            PunchTimer,
+            [=]() { IsPunching = false; },
             0.5,
             false
         );

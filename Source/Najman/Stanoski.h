@@ -13,17 +13,37 @@ class NAJMAN_API AStanoski : public APawn
 {
     GENERATED_BODY()
 
+private:
+    FTimerHandle TimerHandle;
+    FTimerHandle SayHelloTimerHandle;
+    FTimerHandle SayHelloTriggerTimerHandle;
+
+    TFunction<void(void)> TimerCallback();
+
+    ANajmanPlayer* MarcinPlayer;
+
+    void Teleport();
+
+    TArray<AActor*> SpawnPoints;
+
+    AActor* CurrentSpawnPoint;
+    int CurrentSpawnPointId;
+
+protected:
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
+
+    UFUNCTION()
+        void SayHello();
+
+    void SetupSayHelloTriggerTimer();
+
 public:
     // Sets default values for this pawn's properties
     AStanoski();
 
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-protected:
-    // Called when the game starts or when spawned
-    virtual void BeginPlay() override;
-
-public:    
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
@@ -31,32 +51,10 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    bool isHit;
+    bool IsHit;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    bool isSayingHello;
-
-private:
-    FTimerHandle handle;
-    FTimerHandle sayHelloTimerHandle;
-    FTimerHandle sayHelloTriggerTimerHandle;
-
-    TFunction<void(void)> timerCallback();
-
-    ANajmanPlayer* marcinPlayer;
-
-    void teleport();
-
-    TArray<AActor*> spawnPoints;
-
-    AActor* currentSpawnPoint;
-    int currentSpawnPointId;
-
-protected:
-    UFUNCTION()
-    void sayHello();
-
-    void setupSayHelloTriggerTimer();
+    bool IsSayingHello;
 };
 
 

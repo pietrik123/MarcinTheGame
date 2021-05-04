@@ -11,17 +11,21 @@ class NAJMAN_API ANajmanPlayer : public APawn
 {
     GENERATED_BODY()
 
+private:
+    FTimerHandle PunchTimer;
+
+    void Punch();
+
+protected:
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
+
 public:
     // Sets default values for this pawn's properties
     ANajmanPlayer();
 
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-protected:
-    // Called when the game starts or when spawned
-    virtual void BeginPlay() override;
-
-public:    
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
@@ -29,10 +33,5 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    bool isPunching;
-
-    FTimerHandle punchTimer;
-
-    void punch();
-
+    bool IsPunching;
 };
