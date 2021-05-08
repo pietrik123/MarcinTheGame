@@ -46,8 +46,6 @@ void AStanoski::BeginPlay()
 // Called every frame
 void AStanoski::Tick(float DeltaTime)
 {
-    static int Cnt = 0;
-
     Super::Tick(DeltaTime);
 
     if (MarcinPlayer)
@@ -74,15 +72,9 @@ void AStanoski::Tick(float DeltaTime)
                     IsHit = false; 
                     Teleport();
                 },
-                0.5, false);
-            if (Cnt % 30 == 0)
-            {
-                UE_LOG(LogTemp, Log, TEXT("Hit!!!"));
-            }
+                0.5, false);          
         }
-    }
-  
-    Cnt++;
+    } 
 }
 
 // Called to bind functionality to input
